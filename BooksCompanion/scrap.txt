@@ -1,0 +1,31 @@
+﻿public DataTable BooksList(string sCnxn, string sLogPath)
+{
+    try
+    {
+        List<Book> oBooks = new List<Book>();
+        Dictionary<int, Book> oBooksNew = new Dictionary<int, Book>();
+
+        SqlConnection oCnxn = new SqlConnection(sCnxn);
+
+        SqlCommand oCmd = new SqlCommand();
+        oCmd.Connection = oCnxn;
+        oCmd.CommandText = "spBookFetchAll";
+
+        DataTable dtBook = new DataTable();
+        SqlDataAdapter daBook = new SqlDataAdapter();
+        daBook.SelectCommand = oCmd;
+
+        oCnxn.Open();
+        daBook.SelectCommand.ExecuteNonQuery();
+        daBook.Fill(dtBook);
+        oCnxn.Close();
+
+        return (dtBook);
+    }
+    catch (Exception ex)
+    {
+        Log oLog = new Log();
+        oLog.LogError("BookList", ex.Message, sLogPath);
+        return (null);
+    }
+}

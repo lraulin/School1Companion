@@ -2,11 +2,46 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace BooksCompanion
 {
     public class Books : Dictionary<int, Book>
     {
+        #region Properties
+        private decimal _TotalPrice;
+        private decimal _AveragePrice;
+
+        public decimal TotalPrice
+        {
+            get
+            {
+                _TotalPrice = 0;
+                foreach (var item in this)
+                {
+                    _TotalPrice += item.Value.Price;
+                }
+                return this._TotalPrice;
+            }
+        }
+
+        public decimal AveragePrice
+        {
+            get
+            {
+                if (this.Count() == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    _AveragePrice = this.TotalPrice / this.Count();
+                    return _AveragePrice;
+                }
+            }
+        }
+        #endregion
+
         public Books()
         {
 
@@ -34,10 +69,10 @@ namespace BooksCompanion
                     oNewBook.Length = Convert.ToInt32(oReader["Length"]);
                     oNewBook.IsOnAmazon = Convert.ToBoolean(oReader["IsOnAmazon"]);
                     oNewBook.DateCreated = oReader["DateCreated"].ToString();
+                    oNewBook.Price = Convert.ToDecimal(oReader["Price"]);
                     if (!this.ContainsKey(oNewBook.BookID))
                         this.Add(oNewBook.BookID, oNewBook);
                 }
-
                 oCnxn.Close();
             }
             catch (Exception ex)
@@ -71,10 +106,10 @@ namespace BooksCompanion
                     oNewBook.Length = Convert.ToInt32(oReader["Length"]);
                     oNewBook.IsOnAmazon = Convert.ToBoolean(oReader["IsOnAmazon"]);
                     oNewBook.DateCreated = oReader["DateCreated"].ToString();
+                    oNewBook.Price = Convert.ToDecimal(oReader["Price"]);
                     if (!this.ContainsKey(oNewBook.BookID))
                         this.Add(oNewBook.BookID, oNewBook);
                 }
-
                 oCnxn.Close();
             }
             catch (Exception ex)
@@ -84,7 +119,7 @@ namespace BooksCompanion
             }
         }
 
-        public DataTable BooksList(string sCnxn, string sLogPath)
+                public DataTable BooksList(string sCnxn, string sLogPath)
         {
             try
             {
@@ -126,6 +161,7 @@ namespace BooksCompanion
         private int _Length;
         private bool _IsOnAmazon;
         private string _DateCreated;
+        private decimal _Price;
 
         public int BookID
         {
@@ -204,6 +240,19 @@ namespace BooksCompanion
                 this._DateCreated = value;
             }
         }
+
+        public decimal Price
+        {
+            get
+            {
+                return this._Price;
+            }
+
+            set
+            {
+                this._Price = value;
+            }
+        }
         #endregion Properties
 
         public Book()
@@ -233,6 +282,7 @@ namespace BooksCompanion
                     this.Length = Convert.ToInt32(oReader["Length"]);
                     this.IsOnAmazon = Convert.ToBoolean(oReader["IsOnAmazon"]);
                     this.DateCreated = oReader["DateCreated"].ToString();
+                    this.Price = Convert.ToDecimal(oReader["Price"]);
                 }
                 oCnxn.Close();
             }
