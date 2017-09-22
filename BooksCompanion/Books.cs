@@ -17,9 +17,9 @@ namespace BooksCompanion
             get
             {
                 _TotalPrice = 0;
-                foreach (var item in this)
+                foreach (int key in this.Keys)
                 {
-                    _TotalPrice += item.Value.Price;
+                    _TotalPrice += this[key].Price;
                 }
                 return this._TotalPrice;
             }
@@ -119,7 +119,7 @@ namespace BooksCompanion
             }
         }
 
-                public DataTable BooksList(string sCnxn, string sLogPath)
+        public DataTable BooksList(string sCnxn, string sLogPath)
         {
             try
             {
