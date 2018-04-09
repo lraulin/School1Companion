@@ -42,8 +42,7 @@ namespace School1Companion
             }
             catch (Exception ex)
             {
-                Log oLog = new Log();
-                oLog.LogError("UsersConstructor", ex.Message, sLogPath);
+                Log.LogError("UsersConstructor", ex.Message, sLogPath);
             }
         }
 
@@ -73,8 +72,7 @@ namespace School1Companion
             }
             catch (Exception ex)
             {
-                Log oLog = new Log();
-                oLog.LogError("UserList", ex.Message, sLogPath);
+                Log.LogError("UserList", ex.Message, sLogPath);
                 return (null);
             }
         }
@@ -121,5 +119,39 @@ namespace School1Companion
         {
             
         }
+
+        public User(int UserID, string CnxnString, string LogPath)
+        {
+            try
+            {
+                SqlConnection oCnxn = new SqlConnection(CnxnString);
+                SqlCommand oCmd = new SqlCommand();
+                oCmd.Connection = oCnxn;
+                oCmd.CommandText = "spUserInfoFetch";
+
+                oCmd.CommandType = CommandType.StoredProcedure;
+
+                oCmd.Parameters.Add(new SqlParameter("@UserID", SqlDbType.VarChar, 50));
+                oCmd.Parameters["@UserID"].Value = UserID;
+
+                oCnxn.Open();
+                SqlDataReader oReader = oCmd.ExecuteReader();
+                while (oReader.Read())
+                {
+                    User oNewUser = new User();
+                    this.UserID = Convert.ToInt32(oReader["UserID"]);
+                    this.FirstName = oReader["FirstName"].ToString();
+                    this.LastName = oReader["LastName"].ToString();
+                    this.CreatedDate = oReader["CreatedDate"].ToString();
+                }
+
+                oCnxn.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("UsersConstructor", ex.Message, LogPath);
+            }
+        }
     }
+
 }

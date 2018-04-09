@@ -13,7 +13,7 @@ namespace BooksCompanion
         {
         }
 
-        public bool LogError(string Source, string ErrMsg, string LogPath)
+        public static bool LogError(string Source, string ErrMsg, string LogPath)
         {
             try
             {
